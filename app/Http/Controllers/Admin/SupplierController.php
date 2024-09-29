@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\Supplier;
 
 class SupplierController extends Controller
 {
@@ -12,7 +13,8 @@ class SupplierController extends Controller
      */
     public function index()
     {
-        //
+        $suppliers = Supplier::all();
+        return view('admin.supplier.index', compact('suppliers'));
     }
 
     /**
@@ -20,7 +22,7 @@ class SupplierController extends Controller
      */
     public function create()
     {
-        //
+        return view('admin.supplier.create');
     }
 
     /**
@@ -28,7 +30,16 @@ class SupplierController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'nama_supplier' => 'required|string|max:255',
+        ]);
+
+        $supplier = new Supplier();
+        $supplier->nama = $request->nama;
+        $supplier->save();
+
+        return redirect()->route('admin.supplier.index')
+                         ->with('success', 'Supplier berhasil dibuat.');
     }
 
     /**

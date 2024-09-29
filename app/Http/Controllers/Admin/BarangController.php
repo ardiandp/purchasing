@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\Barang;
 
 class BarangController extends Controller
 {
@@ -12,7 +13,8 @@ class BarangController extends Controller
      */
     public function index()
     {
-        //
+        $barangs = Barang::all();
+        return view('admin.barang.index', compact('barangs'));        
     }
 
     /**
@@ -20,7 +22,7 @@ class BarangController extends Controller
      */
     public function create()
     {
-        //
+        return view('admin.barang.create');
     }
 
     /**
@@ -28,7 +30,16 @@ class BarangController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'nama_barang' => 'required|string|max:255',
+        ]);
+
+        $barang = new Barang();
+        $barang->nama = $request->nama;
+        $barang->save();
+
+        return redirect()->route('admin.barang.index')
+                         ->with('success', 'Barang berhasil dibuat.');
     }
 
     /**
@@ -36,7 +47,8 @@ class BarangController extends Controller
      */
     public function show(string $id)
     {
-        //
+
+       
     }
 
     /**
@@ -44,7 +56,7 @@ class BarangController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        
     }
 
     /**
@@ -52,7 +64,7 @@ class BarangController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        
     }
 
     /**

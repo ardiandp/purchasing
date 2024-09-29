@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\Divisi;
 
 class DivisiController extends Controller
 {
@@ -12,7 +13,8 @@ class DivisiController extends Controller
      */
     public function index()
     {
-        //
+        $divisi = Divisi::all();
+        return view('admin.divisi.index', compact('divisi'));
     }
 
     /**
@@ -20,7 +22,7 @@ class DivisiController extends Controller
      */
     public function create()
     {
-        //
+        return view('admin.divisi.create');
     }
 
     /**
@@ -28,7 +30,14 @@ class DivisiController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'nama_divisi' => 'required|string|max:255',
+        ]);
+
+        Divisi::create($request->all());
+
+        return redirect()->route('admin.divisi.index')
+                         ->with('success', 'Divisi berhasil dibuat.');
     }
 
     /**
@@ -36,7 +45,7 @@ class DivisiController extends Controller
      */
     public function show(string $id)
     {
-        //
+        return view('admin.divisi.show', compact('divisi'));
     }
 
     /**
@@ -44,7 +53,7 @@ class DivisiController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        return view('admin.divisi.edit', compact('divisi'));
     }
 
     /**
@@ -52,7 +61,14 @@ class DivisiController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $request->validate([
+            'nama_divisi' => 'required|string|max:255',
+        ]);
+
+        $divisi->update($request->all());
+
+        return redirect()->route('admin.divisi.index')
+                         ->with('success', 'Divisi berhasil diperbarui.');
     }
 
     /**
@@ -60,6 +76,9 @@ class DivisiController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $divisi->delete();
+
+        return redirect()->route('admin.divisi.index')
+                         ->with('success', 'Divisi berhasil dihapus.');
     }
 }
