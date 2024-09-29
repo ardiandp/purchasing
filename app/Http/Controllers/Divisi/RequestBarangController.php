@@ -3,7 +3,11 @@
 namespace App\Http\Controllers\Divisi;
 
 use App\Http\Controllers\Controller;
+use App\Models\RequestBarang;
+use App\Models\Divisi;
+use App\Models\Barang;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class RequestBarangController extends Controller
 {
@@ -12,7 +16,10 @@ class RequestBarangController extends Controller
      */
     public function index()
     {
-        //
+        $user = Auth::user();
+        $divisi = $user->divisi; // Asumsikan setiap user divisi memiliki relasi ke divisi
+        $requests = RequestBarang::where('divisi_id', $divisi->id)->get();
+        return view('divisi.requestbarang.index', compact('requests'));
     }
 
     /**
@@ -20,7 +27,8 @@ class RequestBarangController extends Controller
      */
     public function create()
     {
-        //
+        $barang = Barang::all();
+        return view('divisi.requestbarang.create', compact('barang'));
     }
 
     /**
@@ -28,7 +36,23 @@ class RequestBarangController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'barang_id' => 'required|exists:barang,id',
+            'jumlah' => 'required|integer|min:1',
+        ]);
+
+        $user = Auth::user();
+        $divisi = $user->divisi;
+
+        RequestBarang::create([
+            'divisi_id' => $divisi->id,
+            'barang_id' => $request->barang_id,
+            'jumlah' => $request->jumlah,
+            'status' => 'pending',
+        ]);
+
+        return redirect()->route('divisi.request-barang.index')
+                         ->with('success', 'Permintaan barang berhasil diajukan.');
     }
 
     /**

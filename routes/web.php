@@ -7,10 +7,25 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\StaffGAController;
 use App\Http\Controllers\HeadGAController;
 use App\Http\Controllers\DivisiController;
+use App\Http\Controllers\ApprovalController;
+use App\Http\Controllers\BarangMasukController;
+use App\Http\Controllers\BarangKeluarController;
+use App\Http\Controllers\PembelianController;
+use App\Http\Controllers\SupplierController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\BarangController;
 
 Route::get('/', function () {
     return view('welcome');
 });
+
+//Approval
+Route::middleware(['auth', 'role:Head GA'])->group(function () {
+    Route::get('head-ga/approval', [ApprovalController::class, 'index'])->name('head-ga.approval.index');
+    Route::post('head-ga/approval/{id}/approve', [ApprovalController::class, 'approve'])->name('head-ga.approval.approve');
+    Route::post('head-ga/approval/{id}/reject', [ApprovalController::class, 'reject'])->name('head-ga.approval.reject');
+});
+
 
 // Route untuk Admin
 Route::middleware(['auth', 'role:Admin'])->group(function () {

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\HeadGA;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\RequestBarang;
 
 class ApprovalController extends Controller
 {
@@ -12,7 +13,8 @@ class ApprovalController extends Controller
      */
     public function index()
     {
-        //
+        $requests = RequestBarang::where('status', 'pending')->with(['barang', 'divisi'])->get();
+        return view('headga.approval.index', compact('requests'));
     }
 
     /**
@@ -20,7 +22,22 @@ class ApprovalController extends Controller
      */
     public function create()
     {
-        //
+        $requestBarang = RequestBarang::findOrFail($id);
+        $requestBarang->status = 'approved';
+        $requestBarang->save();
+
+        return redirect()->route('head-ga.approval.index')
+                         ->with('success', 'Permintaan barang telah disetujui.');
+    }
+
+    public function reject($id)
+    {
+        $requestBarang = RequestBarang::findOrFail($id);
+        $requestBarang->status = 'rejected';
+        $requestBarang->save();
+
+        return redirect()->route('head-ga.approval.index')
+                         ->with('success', 'Permintaan barang telah ditolak.');
     }
 
     /**
